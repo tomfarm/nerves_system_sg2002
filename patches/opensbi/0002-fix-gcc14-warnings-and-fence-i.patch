@@ -1,0 +1,28 @@
+Fix OpenSBI build with GCC 14
+
+GCC 14 is stricter about:
+1. Uninitialized variable 'cnt' in fdt_reset_thead.c (used after
+   conditional initialization, triggers -Werror)
+2. fence.i instruction requires zifencei extension to be explicitly
+   specified in the -march string
+
+--- a/lib/utils/reset/fdt_reset_thead.c
++++ b/lib/utils/reset/fdt_reset_thead.c
+@@ -62,7 +62,7 @@ static int thead_reset_init(void *fdt, int nodeoff,
+ 	const fdt64_t *val;
+ 	const fdt32_t *val_w;
+-	int len, i, cnt;
++	int len, i, cnt = 0;
+ 	u32 t, tmp = 0;
+
+ 	/* Prepare clone csrs */
+--- a/lib/sbi/sbi_tlb.c
++++ b/lib/sbi/sbi_tlb.c
+@@ -172,7 +172,7 @@ void sbi_tlb_local_hfence_gvma(struct sbi_tlb_info *tinfo)
+ void sbi_tlb_local_fence_i(struct sbi_tlb_info *tinfo)
+ {
+-	__asm__ __volatile("fence.i");
++	__asm__ __volatile__(".insn 0x100f");
+ }
+
+ void sbi_tlb_local_sfence_vma(struct sbi_tlb_info *tinfo)
