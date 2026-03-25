@@ -1,15 +1,15 @@
-Disable -Werror in cvitek interdrv modules for GCC 14
+Disable -Werror in cvitek modules for GCC 14
 
-GCC 14 introduces new warnings (stringop-overread, enum-int-mismatch)
-that are treated as errors. These are vendor kernel modules with known
-issues that are not worth patching individually.
+GCC 14 introduces new warnings that are treated as errors.
+Add -Wno-error globally for these vendor kernel modules.
 
---- a/interdrv/v2/Makefile
-+++ b/interdrv/v2/Makefile
-@@ -1,3 +1,6 @@
+--- a/Makefile
++++ b/Makefile
+@@ -1,4 +1,7 @@
+ SHELL=/bin/bash
 +# Disable -Werror for GCC 14 compatibility
-+KCFLAGS += -Wno-error
++export KCFLAGS += -Wno-error
 +
- ifeq ($(CVITEK_INTERDRV_INCLUDE_WIFI), y)
- include $(PWD)/interdrv/v2/wifi_drv.mk
- endif
+ -include $(BUILD_PATH)/.config
+ #
+ export CVIARCH_L := $(shell echo $(CVIARCH) | tr A-Z a-z)
