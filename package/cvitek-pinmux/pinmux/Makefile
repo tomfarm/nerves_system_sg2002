@@ -1,9 +1,9 @@
-CC = riscv64-unknown-linux-musl-gcc
+CC ?= riscv64-nerves-linux-musl-gcc
 
 source  = cvi_pinmux.c devmem.c
 object  = $(source:%.cc=%.o)
 
-CFLAGS += -mcpu=c906fdv -march=rv64imafdcv0p7xthead -mcmodel=medany -mabi=lp64d -static
+CFLAGS += -march=rv64imafdc_zicsr_zifencei -mcmodel=medany -mabi=lp64d -static
 
 all: $(object)
 	$(CC) $(CFLAGS) $(object) -o cvi_pinmux
