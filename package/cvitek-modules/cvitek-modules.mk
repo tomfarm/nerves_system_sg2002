@@ -12,7 +12,7 @@ CVITEK_MODULES_INSTALL_STAGING = YES
 CVITEK_MODULES_MODULE_MAKE_OPTS = \
     CHIP_CODE=CV181X CVIARCH=CV181X CHIP_ARCH=CV181X CVIARCH_L=cv181x \
     CHIP=cv181x CHIP_CODE=cv181x CVIARCH=cv181x CHIP_ARCH=cv181x \
-    EXTRA_CFLAGS=-D__CV181X__\ -Wno-error\ \
+    EXTRA_CFLAGS=-D__CV181X__\ \
                  -I$(BUILD_DIR)/cvitek-modules-$(CVITEK_MODULES_VERSION)/interdrv/include\ \
                  -I$(BUILD_DIR)/cvitek-modules-$(CVITEK_MODULES_VERSION)/interdrv/include/common/uapi\ \
                  -I$(BUILD_DIR)/cvitek-modules-$(CVITEK_MODULES_VERSION)/interdrv/include/chip/cv181x/uapi
