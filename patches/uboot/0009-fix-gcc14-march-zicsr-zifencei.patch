@@ -1,0 +1,17 @@
+Fix U-Boot RISC-V build with GCC 14
+
+GCC 14 requires zicsr and zifencei extensions to be explicitly
+specified in the -march string. They were previously implicit
+in the base ISA but are now separate extensions per spec.
+
+--- a/arch/riscv/Makefile
++++ b/arch/riscv/Makefile
+@@ -24,7 +24,7 @@
+ 	CMODEL = medany
+ endif
+ 
+-ARCH_FLAGS = -march=$(ARCH_BASE)$(ARCH_A)$(ARCH_C) -mabi=$(ABI) \
++ARCH_FLAGS = -march=$(ARCH_BASE)$(ARCH_A)$(ARCH_C)_zicsr_zifencei -mabi=$(ABI) \
+ 	     -mcmodel=$(CMODEL)
+ 
+ PLATFORM_CPPFLAGS	+= $(ARCH_FLAGS)
