@@ -58,3 +58,14 @@ requires zifencei extension. Initialize cnt to fix -Werror.
  	}
  	return 0;
  }
+--- a/firmware/fw_base.S
++++ b/firmware/fw_base.S
+@@ -760,7 +760,7 @@
+ _reset_regs:
+ 
+ 	/* flush the instruction cache */
+-	fence.i
++	.insn 0x100f
+ 	/* Reset all registers except ra, a0, a1 and a2 */
+ 	li sp, 0
+ 	li gp, 0
