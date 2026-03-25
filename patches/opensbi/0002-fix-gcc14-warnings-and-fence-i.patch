@@ -6,24 +6,23 @@ GCC 14 is stricter about:
 
 --- a/lib/utils/reset/fdt_reset_thead.c
 +++ b/lib/utils/reset/fdt_reset_thead.c
-@@ -59,7 +59,7 @@ static int thead_reset_init(void *fdt, int nodeoff,
- {
+@@ -62,7 +62,7 @@
  	void *p;
  	const fdt64_t *val;
  	const fdt32_t *val_w;
 -	int len, i, cnt;
 +	int len, i, cnt = 0;
  	u32 t, tmp = 0;
-
+ 
  	/* Prepare clone csrs */
 --- a/lib/sbi/sbi_tlb.c
 +++ b/lib/sbi/sbi_tlb.c
-@@ -173,7 +173,7 @@ void sbi_tlb_local_hfence_gvma(struct sbi_tlb_info *tinfo)
-
+@@ -172,7 +172,7 @@
+ 
  void sbi_tlb_local_fence_i(struct sbi_tlb_info *tinfo)
  {
 -	__asm__ __volatile("fence.i");
 +	__asm__ __volatile__(".insn 0x100f");
  }
-
+ 
  static void sbi_tlb_entry_process(struct sbi_tlb_info *tinfo)
