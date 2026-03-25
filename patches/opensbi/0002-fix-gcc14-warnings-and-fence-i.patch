@@ -1,11 +1,10 @@
 Fix OpenSBI build with GCC 14
 
-Replace fence.i instructions with raw encoding (.insn 0x100f) since
-GCC 14 requires the zifencei extension to be explicitly specified.
-Also initialize cnt variable to fix -Werror warning.
+Replace fence.i with raw encoding (.insn 0x100f) since GCC 14
+requires zifencei extension. Initialize cnt to fix -Werror.
 
 --- a/include/sbi/riscv_barrier.h
-+++ include/sbi/riscv_barrier.h
++++ b/include/sbi/riscv_barrier.h
 @@ -19,7 +19,7 @@
  	__asm__ __volatile__ ("fence " #p "," #s : : : "memory")
  
@@ -15,3 +14,47 @@ Also initialize cnt variable to fix -Werror warning.
  
  /* Read & Write Memory barrier */
  #define mb()			RISCV_FENCE(iorw,iorw)
+--- a/lib/sbi/sbi_tlb.c
++++ b/lib/sbi/sbi_tlb.c
+@@ -172,7 +172,7 @@
+ 
+ void sbi_tlb_local_fence_i(struct sbi_tlb_info *tinfo)
+ {
+-	__asm__ __volatile("fence.i");
++	__asm__ __volatile__(".insn 0x100f");
+ }
+ 
+ static void sbi_tlb_entry_process(struct sbi_tlb_info *tinfo)
+--- a/lib/utils/reset/fdt_reset_thead.c
++++ b/lib/utils/reset/fdt_reset_thead.c
+@@ -62,7 +62,7 @@
+ 	void *p;
+ 	const fdt64_t *val;
+ 	const fdt32_t *val_w;
+-	int len, i, cnt;
++	int len, i, cnt = 0;
+ 	u32 t, tmp = 0;
+ 
+ 	/* Prepare clone csrs */
+--- a/platform/generic/cvitek_riscv.c
++++ b/platform/generic/cvitek_riscv.c
+@@ -72,7 +72,7 @@
+ 	writel(readl((void *)0x03002000) | 0x10, (void *)0x03002000); //enable TPU clock
+ 	memcpy((void *)SUSPEND_SRAM_ENTRY, suspend_sram_entry, suspend_sram_end - suspend_sram_entry);
+ 
+-	asm volatile("fence.i" ::: "memory");
++	asm volatile(".insn 0x100f" ::: "memory");
+ 
+ 	asm volatile("fence rw,rw\n\t");
+ 
+--- a/platform/andes/ae350/cache.c
++++ b/platform/andes/ae350/cache.c
+@@ -32,7 +32,7 @@
+ 		csr_set(CSR_MCACHECTL, V5_MCACHE_CTL_IC_EN);
+ 	} else {
+ 		csr_clear(CSR_MCACHECTL, V5_MCACHE_CTL_IC_EN);
+-		asm volatile("fence.i\n\t");
++		asm volatile(".insn 0x100f\n\t");
+ 	}
+ 	return 0;
+ }
